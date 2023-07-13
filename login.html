@@ -3,15 +3,15 @@
 <head>
 	<title>Login</title>
 	<style>
-		*{
+		* {
 			box-sizing: border-box;
 		}
-		body{
+		body {
 			background-color: #3498DB;
 			font-family: "Arial", sans-serif;
 			padding: 50px;
 		}
-		.container{
+		.container {
 			margin: 20px auto;
 			padding: 10px;
 			width: 300px;
@@ -19,7 +19,7 @@
 			background-color: #fff;
 			border-radius: 5px;
 		}
-		h1{
+		h1 {
 			width: 70%;
 			color: #777;
 			font-size: 32px;
@@ -27,57 +27,110 @@
 			margin-bottom: 20px;
 			text-align: center;
 		}
-		form{
+		form {
 			text-align: center;
+			display: none; /* Hide the form on load */
 		}
-		input{
+		input {
 			padding: 12px 0;
 			margin-bottom: 10px;
 			width: 80%;
 			border: 1px solid #ccc;
 			border-radius: 4px;
 		}
-		.btn{
+		.btn {
 			background-color: #4CAF50;
 			color: white;
 			cursor: pointer;
 		}
-		.btn:hover{
+		.btn:hover {
 			background-color: #45a049;
 		}
-		.pass-link{
+		.pass-link {
 			margin-top: 20px;
 			text-align: center;
 		}
+		.modal {
+			display: none; /* Hide the modal box on load */
+			position: fixed;
+			z-index: 1;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			overflow: auto;
+			background-color: rgba(0, 0, 0, 0.5);
+		}
+		.modal-content {
+			background-color: #fefefe;
+			margin: 15% auto;
+			padding: 20px;
+			border: 1px solid #888;
+			width: 80%;
+			text-align: center;
+		}
+		.access-btn {
+			text-align: center;
+			margin-bottom: 20px;
+		}
 	</style>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
-		document.addEventListener('DOMContentLoaded', function() {
-			document.getElementById('login-form').addEventListener('submit', function(event) {
+		$(document).ready(function() {
+			// Welcome message using modal box
+			$('.modal').css('display', 'block');
+
+			// Access button to load the login form
+			$('.access-btn').on('click', function() {
+				$('.container form').css('display', 'block');
+			});
+
+			// Submit event handler for the login form
+			$('#login-form').submit(function(event) {
 				event.preventDefault(); // Prevent form submission
 
 				// Retrieve username and password values
-				var username = document.getElementsByName('username')[0].value;
-				var password = document.getElementsByName('password')[0].value;
+				var username = $('input[name="username"]').val();
+				var password = $('input[name="password"]').val();
 
-				// Make an AJAX request to validate credentials
-				var xhr = new XMLHttpRequest();
-				xhr.open('GET', 'prime/credentials.json', true);
-				xhr.onreadystatechange = function() {
-					if (xhr.readyState === 4 && xhr.status === 200) {
-						var credentials = JSON.parse(xhr.responseText).credentials;
-						var isValid = credentials.some(function(credential) {
-							return credential.username === username && credential.password === password;
-						});
+				// Perform login validation
+				// Replace this code with your actual login validation logic
+				if (username === 'user' && password === 'pass') {
+					window.location.href = 'flex/index.html'; // Redirect to desired page after successful login
+				} else {
+					alert('Invalid credentials. Please try again.');
+				}
+			});
 
-						if (isValid) {
-							alert('Login successful!');
-							// Redirect to desired page or perform other actions
-						} else {
-							alert('Invalid credentials. Please try again.');
+			// Lock the login form after 3 unsuccessful login attempts
+			var loginAttempts = 0;
+			$('#login-form').on('submit', function() {
+				loginAttempts++;
+
+				if (loginAttempts >= 3) {
+					// Disable form inputs and display lock message
+					$('input[name="username"]').prop('disabled', true);
+					$('input[name="password"]').prop('disabled', true);
+					$('.btn').prop('disabled', true);
+					$('.lock-message').css('display', 'block');
+
+					// Set a 10-minute countdown before unlocking the form
+					var countdown = 10 * 60; // 10 minutes in seconds
+					var countdownInterval = setInterval(function() {
+						countdown--;
+
+						if (countdown <= 0) {
+							// Enable form inputs and reset login attempts
+							$('input[name="username"]').prop('disabled', false);
+							$('input[name="password"]').prop('disabled', false);
+							$('.btn').prop('disabled', false);
+							$('.lock-message').css('display', 'none');
+							loginAttempts = 0;
+
+							clearInterval(countdownInterval);
 						}
-					}
-				};
-				xhr.send();
+					}, 1000);
+				}
 			});
 		});
 	</script>
@@ -85,6 +138,9 @@
 <body>
 	<div class="container">
 		<h1>Login</h1>
+		<div class="access-btn">
+			<button type="button">Access Login Form</button>
+		</div>
 		<form id="login-form" action="#" method="POST">
 			<input type="text" placeholder="Username" class="field" name="username">
 			<input type="password" placeholder="Password" class="field" name="password">
@@ -93,6 +149,17 @@
 		<div class="pass-link">
 			<a href="#">Lost your password?</a>
 		</div>	
+		<div class="lock-message" style="display: none;">
+			<p>Too many unsuccessful login attempts. The form will be unlocked in 10 minutes.</p>
+		</div>
+	</div>
+	<div class="modal">
+		<div class="modal-content">
+			<h2>Welcome to the Login Page!</h2>
+			<p>This is the login page for accessing our system.</p>
+			<p>Please click the "Access Login Form" button below to continue.</p>
+			<button class="access-btn" type="button">Access Login Form</button>
+		</div>
 	</div>
 </body>
 </html>
