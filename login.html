@@ -38,43 +38,10 @@
 		#login-details {
 			margin-top: 3rem;
 		}
-
-		.modal {
-			display: none;
-			position: fixed;
-			z-index: 1;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			overflow: auto;
-			background-color: rgba(0, 0, 0, 0.4);
-		}
-
-		.modal-content {
-			background-color: #fefefe;
-			margin: 15% auto;
-			padding: 20px;
-			border: 1px solid #888;
-			width: 80%;
-			text-align: center;
-		}
 	</style>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			// Welcome modal box
-			var modal = document.getElementById("welcomeModal");
-			modal.style.display = "block";
-
-			// Hide the login form
-			$("#login-form").hide();
-
-			// Show the login form on access button click
-			$("#access-btn").click(function() {
-				$("#login-form").show();
-			});
-
 			// Login form submission
 			$("#login-form").submit(function(event) {
 				event.preventDefault(); // Prevent form submission
@@ -129,12 +96,6 @@
 	</script>
 </head>
 <body>
-	<div class="modal" id="welcomeModal">
-		<div class="modal-content">
-			<p>Welcome to the login page!</p>
-		</div>
-	</div>
-
 	<div id="login-form">
 		<div id="login-head">
 			<h1>Log.In</h1>
@@ -153,7 +114,5 @@
 			</form>
 		</div>
 	</div>
-
-	<button id="access-btn">Access</button>
 </body>
 </html>
