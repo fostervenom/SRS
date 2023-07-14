@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Login | SRS</title>
+  <title>Login</title>
   <link rel="icon" type="image/png" href="img/std.png">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter&family=Nunito:wght@500&display=swap');
@@ -92,6 +92,26 @@
       left: 0;
     }
   </style>
+  <script>
+    function login() {
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
+
+      fetch("prime/credentials.json")
+        .then(response => response.json())
+        .then(data => {
+          if (data[username] && data[username].password === password) {
+            alert("Login successful");
+            // Perform any necessary actions after successful login (e.g., redirect to another page)
+          } else {
+            alert("Invalid credentials. Please try again.");
+          }
+        })
+        .catch(error => {
+          console.error("Error retrieving credentials:", error);
+        });
+    }
+  </script>
 </head>
 <body>
   <div id="login-form">
@@ -100,17 +120,17 @@
       <h1>Log.In</h1>
     </div>
     <div id="login-details">
-      <form action="">
+      <form action="#">
         <div id="user">
           <label for="username">Username</label><br>
-          <input type="text" name="name" id="username" placeholder="Username" required>
+          <input type="text" name="username" id="username" placeholder="Username" required>
         </div>
         <div id="pass">
           <label for="password">Password</label><br>
           <input type="password" name="password" id="password" placeholder="Password" required>
         </div>
         <div id="submit">
-          <input type="submit" value="Log-In" class="login-button">
+          <input type="button" value="Log-In" class="login-button" onclick="login()">
         </div>
       </form>
     </div>
