@@ -3,55 +3,44 @@
 <head>
 	<title>Login</title>
 	<style>
-		* {
-			box-sizing: border-box;
-		}
+		@import url('https://fonts.googleapis.com/css2?family=Inter&family=Nunito:wght@500&display=swap');
+
+		/* font-family: 'Inter', sans-serif;
+		font-family: 'Nunito', sans-serif; */
 		body {
-			background-color: #3498DB;
-			font-family: "Arial", sans-serif;
-			padding: 50px;
+			margin: 0;
+			padding: 0;
+			background: #111B28;
 		}
-		.container {
-			margin: 20px auto;
-			padding: 10px;
-			width: 300px;
-			height: 300px;
-			background-color: #fff;
-			border-radius: 5px;
-		}
-		h1 {
-			width: 70%;
-			color: #777;
-			font-size: 32px;
-			margin: 28px auto;
-			margin-bottom: 20px;
-			text-align: center;
-		}
-		form {
-			text-align: center;
-			display: none; /* Hide the form on load */
-		}
-		input {
-			padding: 12px 0;
-			margin-bottom: 10px;
-			width: 80%;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-		}
-		.btn {
-			background-color: #4CAF50;
+
+		#login-form {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			width: 400px;
+			padding: 40px;
+			transform: translate(-50%, -50%);
+			background: linear-gradient(#0B111A, #111B28);
+			box-sizing: border-box;
+			box-shadow: 0 15px 25px #0DC8F4;
+			border-radius: 10px;
 			color: white;
-			cursor: pointer;
+			letter-spacing: .2em;
 		}
-		.btn:hover {
-			background-color: #45a049;
-		}
-		.pass-link {
-			margin-top: 20px;
+
+		#login-head {
 			text-align: center;
+			font-family: 'Inter', sans-serif;
+			color: #0DC8F4;
+			text-shadow: 0 0 .28rem#0DC8F4;
 		}
+
+		#login-details {
+			margin-top: 3rem;
+		}
+
 		.modal {
-			display: none; /* Hide the modal box on load */
+			display: none;
 			position: fixed;
 			z-index: 1;
 			left: 0;
@@ -59,8 +48,9 @@
 			width: 100%;
 			height: 100%;
 			overflow: auto;
-			background-color: rgba(0, 0, 0, 0.5);
+			background-color: rgba(0, 0, 0, 0.4);
 		}
+
 		.modal-content {
 			background-color: #fefefe;
 			margin: 15% auto;
@@ -69,97 +59,101 @@
 			width: 80%;
 			text-align: center;
 		}
-		.access-btn {
-			text-align: center;
-			margin-bottom: 20px;
-		}
 	</style>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script>
 		$(document).ready(function() {
-			// Welcome message using modal box
-			$('.modal').css('display', 'block');
+			// Welcome modal box
+			var modal = document.getElementById("welcomeModal");
+			modal.style.display = "block";
 
-			// Access button to load the login form
-			$('.access-btn').on('click', function() {
-				$('.container form').css('display', 'block');
+			// Hide the login form
+			$("#login-form").hide();
+
+			// Show the login form on access button click
+			$("#access-btn").click(function() {
+				$("#login-form").show();
 			});
 
-			// Submit event handler for the login form
-			$('#login-form').submit(function(event) {
+			// Login form submission
+			$("#login-form").submit(function(event) {
 				event.preventDefault(); // Prevent form submission
 
 				// Retrieve username and password values
-				var username = $('input[name="username"]').val();
-				var password = $('input[name="password"]').val();
+				var username = $("input[name='name']").val();
+				var password = $("input[name='password']").val();
 
-				// Perform login validation
-				// Replace this code with your actual login validation logic
-				if (username === 'user' && password === 'pass') {
-					window.location.href = 'flex/index.html'; // Redirect to desired page after successful login
-				} else {
-					alert('Invalid credentials. Please try again.');
+				// Check if login is locked
+				if (localStorage.getItem("loginLocked") === "true") {
+					alert("Login is locked for the next 10 minutes. Please try again later.");
+					return;
 				}
-			});
 
-			// Lock the login form after 3 unsuccessful login attempts
-			var loginAttempts = 0;
-			$('#login-form').on('submit', function() {
-				loginAttempts++;
+				// Make an AJAX request to validate credentials
+				$.ajax({
+					url: "prime/credentials.json",
+					dataType: "json",
+					success: function(data) {
+						var credentials = data.credentials;
+						var isValid = credentials.some(function(credential) {
+							return credential.username === username && credential.password === password;
+						});
 
-				if (loginAttempts >= 3) {
-					// Disable form inputs and display lock message
-					$('input[name="username"]').prop('disabled', true);
-					$('input[name="password"]').prop('disabled', true);
-					$('.btn').prop('disabled', true);
-					$('.lock-message').css('display', 'block');
+						if (isValid) {
+							alert("Login successful!");
+							// Redirect to desired page
+							window.location.href = "flex/index.html";
+						} else {
+							alert("Invalid credentials. Please try again.");
 
-					// Set a 10-minute countdown before unlocking the form
-					var countdown = 10 * 60; // 10 minutes in seconds
-					var countdownInterval = setInterval(function() {
-						countdown--;
+							// Increase login attempts and lock if necessary
+							var loginAttempts = localStorage.getItem("loginAttempts") || 0;
+							loginAttempts++;
+							localStorage.setItem("loginAttempts", loginAttempts);
 
-						if (countdown <= 0) {
-							// Enable form inputs and reset login attempts
-							$('input[name="username"]').prop('disabled', false);
-							$('input[name="password"]').prop('disabled', false);
-							$('.btn').prop('disabled', false);
-							$('.lock-message').css('display', 'none');
-							loginAttempts = 0;
-
-							clearInterval(countdownInterval);
+							if (loginAttempts >= 3) {
+								localStorage.setItem("loginLocked", "true");
+								setTimeout(function() {
+									localStorage.removeItem("loginAttempts");
+									localStorage.removeItem("loginLocked");
+								}, 600000); // 10 minutes in milliseconds
+							}
 						}
-					}, 1000);
-				}
+					},
+					error: function() {
+						alert("Failed to retrieve credentials.");
+					}
+				});
 			});
 		});
 	</script>
 </head>
 <body>
-	<div class="container">
-		<h1>Login</h1>
-		<div class="access-btn">
-			<button type="button">Access Login Form</button>
-		</div>
-		<form id="login-form" action="#" method="POST">
-			<input type="text" placeholder="Username" class="field" name="username">
-			<input type="password" placeholder="Password" class="field" name="password">
-			<input type="submit" value="Login" class="btn">
-		</form>
-		<div class="pass-link">
-			<a href="#">Lost your password?</a>
-		</div>	
-		<div class="lock-message" style="display: none;">
-			<p>Too many unsuccessful login attempts. The form will be unlocked in 10 minutes.</p>
-		</div>
-	</div>
-	<div class="modal">
+	<div class="modal" id="welcomeModal">
 		<div class="modal-content">
-			<h2>Welcome to the Login Page!</h2>
-			<p>This is the login page for accessing our system.</p>
-			<p>Please click the "Access Login Form" button below to continue.</p>
-			<button class="access-btn" type="button">Access Login Form</button>
+			<p>Welcome to the login page!</p>
 		</div>
 	</div>
+
+	<div id="login-form">
+		<div id="login-head">
+			<h1>Log.In</h1>
+		</div>
+		<div id="login-details">
+			<form action="">
+				<div id="user">
+					<input type="text" name="name" placeholder="Username">
+				</div>
+				<div id="pass">
+					<input type="password" name="password" placeholder="Password">
+				</div>
+				<div id="submit">
+					<input type="submit" value="Log-In">
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<button id="access-btn">Access</button>
 </body>
 </html>
