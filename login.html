@@ -93,24 +93,28 @@
     }
   </style>
   <script>
-    function login() {
-      var username = document.getElementById("username").value;
-      var password = document.getElementById("password").value;
+function login() {
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
 
-      fetch("prime/credentials.json")
-        .then(response => response.json())
-        .then(data => {
-          if (data[username] && data[username].password === password) {
-            alert("Login successful");
-            // Perform any necessary actions after successful login (e.g., redirect to another page)
-          } else {
-            alert("Invalid credentials. Please try again.");
-          }
-        })
-        .catch(error => {
-          console.error("Error retrieving credentials:", error);
-        });
-    }
+  fetch("prime/credentials.json")
+    .then(response => response.json())
+    .then(data => {
+      console.log("JSON data:", data);
+      console.log("Entered credentials:", username, password);
+
+      if (data[username] && data[username].password === password) {
+        alert("Login successful");
+        // Perform any necessary actions after successful login (e.g., redirect to another page)
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    })
+    .catch(error => {
+      console.error("Error retrieving credentials:", error);
+    });
+}
+
   </script>
 </head>
 <body>
