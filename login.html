@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Login</title>
+  <link rel="icon" type="image/png" href="img/std.png">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter&family=Nunito:wght@500&display=swap');
 
@@ -32,6 +33,16 @@
       color: #0DC8F4;
       text-shadow: 0 0 0.28rem #0DC8F4;
       margin-bottom: 1rem;
+      position: relative;
+    }
+
+    #login-head img {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 60px;
     }
 
     #login-details {
@@ -66,10 +77,6 @@
       transition: background-color 0.3s ease;
     }
 
-    .login-button:hover {
-      background-color: #0BB8E3;
-    }
-
     .login-button:before {
       content: "";
       position: absolute;
@@ -89,6 +96,7 @@
 <body>
   <div id="login-form">
     <div id="login-head">
+      <img src="img/shield.png" alt="Shield Logo">
       <h1>Log.In</h1>
     </div>
     <div id="login-details">
