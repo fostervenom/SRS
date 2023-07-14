@@ -102,28 +102,32 @@
     var loginAttempts = 0;
     var lockoutTimer;
 
-    function login() {
-      var username = document.getElementById("username").value;
-      var password = document.getElementById("password").value;
+function login() {
+  var username = document.getElementById("username").value;
+  var password = document.getElementById("password").value;
 
-      fetch("https://script.googleusercontent.com/macros/echo?user_content_key=npPD0QBMnF8b3_sYuZnv_1UNk1paRBXU2RJS6AUAD2nzbAWSlXSxzq_JOw3q48uNP-7O70YODIJ9HfNVNnlc62q1eT6PrtvTm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnN5ANf-A-gnPRxZvreMZM4pMJRZi3JQNsScMf7Xa0lvrujd6d8Ua7RcCffTc8EzBZqfNSgIFc1hmUX6qZlp5YGm2lp7I_IoAPtz9Jw9Md8uu&lib=MDpxA3oMHMsZULYGvo3gUciwvS0nEUVxJ")
-        .then(response => response.json())
-        .then(data => {
-          if (data.Username === username && data.Password === password) {
-            alert("Login successful");
-            window.location.href = "flex/index.html"; // Redirect to the specified page after successful login
-          } else {
-            loginAttempts++;
-            if (loginAttempts >= 3) {
-              lockLoginForm();
-            }
-            alert("Invalid credentials. Please try again.");
-          }
-        })
-        .catch(error => {
-          console.error("Error retrieving credentials:", error);
-        });
-    }
+  fetch("https://script.googleusercontent.com/macros/echo?user_content_key=O9KQaBaU7L38WzRg3gVr1icVE72EqN9aXw2J_ghLyZfV3fPeD9L4CgthlIFXixOklenV0-EQvBNac223kg9IfPy7sSQwHVT6m5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnN5ANf-A-gnPRxZvreMZM4pMJRZi3JQNsScMf7Xa0lvrujd6d8Ua7RcCffTc8EzBZqfNSgIFc1hmUX6qZlp5YGm2lp7I_IoAPtz9Jw9Md8uu&lib=MDpxA3oMHMsZULYGvo3gUciwvS0nEUVxJ")
+    .then(response => response.json())
+    .then(data => {
+      var credentials = data.credentials;
+      var found = credentials.find(cred => cred.Username === username && cred.Password === password);
+
+      if (found) {
+        alert("Login successful");
+        window.location.href = "flex/index.html"; // Redirect to the specified page after successful login
+      } else {
+        loginAttempts++;
+        if (loginAttempts >= 3) {
+          lockLoginForm();
+        }
+        alert("Invalid credentials. Please try again.");
+      }
+    })
+    .catch(error => {
+      console.error("Error retrieving credentials:", error);
+    });
+}
+
 
     function lockLoginForm() {
       var loginForm = document.getElementById("login-form");
