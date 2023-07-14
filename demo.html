@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login Form</title>
+  <style>
+    .message {
+      color: red;
+      font-weight: bold;
+    }
+
+    #countdown {
+      font-size: 20px;
+      color: #333;
+      display: none;
+    }
+
+    /* Modal box styles */
+    .modal-frame {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      margin: auto;
+      z-index: 50;
+      display: none;
+    }
+
+    .modal {
+      display: block;
+      vertical-align: middle;
+      text-align: center;
+      background-color: #FFF;
+      padding: 60px;
+      min-width: 320px;
+      min-height: 126px;
+      margin: auto;
+      visibility: hidden;
+      box-shadow: 2px 2px 8px 1px rgba(0,0,0,.2);
+      backface-visibility: hidden;
+      transform: translate3d(0,0,0);
+      transform-style: preserve-3d;
+      animation: modalComeIn .25s ease;
+    }
+
+    @keyframes modalComeIn {
+      0% {
+        visibility: hidden;
+        opacity: 0;
+        transform: scale(.8, .8);
+      }
+      100% {
+        visibility: visible;
+        opacity: 1;
+        transform: scale(1, 1);
+      }
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <h2>Login</h2>
+  <form id="loginForm" action="#" method="POST">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required><br><br>
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required><br><br>
+    <input type="submit" value="Login">
+  </form>
+
+  <p class="message" id="warningMsg"></p>
+  <p id="countdown"></p>
+
+  <div id="successModal" class="modal">
+    <h3>Success!</h3>
+    <p id="successMessage"></p>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      var remainingAttempts = 3;
+      var lockTime = 0; // Lock time in minutes
+      var retryTime = 0; // Retry time in minutes
+      var countdownInterval;
+      var $successModal = $('#successModal');
+
+      function displayMessage(message, isError) {
+        var messageElement = isError ? $('#warningMsg') : $('#countdown');
+        messageElement.text(message).show();
+      }
+
+      function startCountdown(minutes) {
+        var seconds = minutes * 60;
+        var countdownElement = $('#countdown');
+        countdownElement.text(seconds + ' seconds');
+        countdownElement.show();
+
+        countdownInterval = setInterval(function() {
+          seconds--;
+          countdownElement.text(seconds + ' seconds');
+
+          if (seconds <= 0) {
+            clearInterval(countdownInterval);
+            countdownElement.hide();
+          }
+        }, 1000);
+      }
+
+      function lockPage(minutes) {
+        remainingAttempts = 0;
+        lockTime = minutes;
+        $('#username, #password, input[type="submit"]').attr('disabled', 'disabled');
+        startCountdown(minutes);
+      }
+
+      function handleLogin(username, password) {
+        var url = 'https://script.googleusercontent.com/macros/echo?user_content_key=QUAS0kDydlp5ZlfI1kpmbfclBSzzPQf3POZqxQROXmXwFWO_nuTA6EMn0QLPv9YewyBDY76tTsd9ZgYuBYzwLLVcbLdWTD6mm5_BxDlH2jW0nuo2oDemN9CCS2h10ox_1xSncGQajx_ryfhECjZEnN5ANf-A-gnPRxZvreMZM4pMJRZi3JQNsScMf7Xa0lvrujd6d8Ua7RcCffTc8EzBZqfNSgIFc1hmUX6qZlp5YGm2lp7I_IoAPtz9Jw9Md8uu&lib=MDpxA3oMHMsZULYGvo3gUciwvS0nEUVxJ';
+
+        $.getJSON(url, function(data) {
+          var credentials = data.data;
+          var validUser = false;
+
+          for (var i = 0; i < credentials.length; i++) {
+            if (username === credentials[i].Username && parseInt(password) === credentials[i].Password) {
+              validUser = true;
+              break;
+            }
+          }
+
+          if (validUser) {
+            remainingAttempts = 3;
+            $('#loginForm')[0].reset();
+            var successMessage = 'Welcome ' + username + ', Access granted!';
+            $('#successMessage').text(successMessage);
+
+            // Show the success modal box
+            $successModal.show();
+
+            setTimeout(function() {
+              $successModal.hide();
+              window.location.href = 'flex/index.html';
+            }, 3000); // Hide modal box and redirect after 3 seconds
+          } else {
+            remainingAttempts--;
+
+            if (remainingAttempts > 0) {
+              displayMessage('Invalid username or password. ' + remainingAttempts + ' attempts remaining.', true);
+            } else {
+              if (lockTime === 0) {
+                lockPage(3); // Lock for 3 minutes on the first failed attempt
+              } else if (retryTime === 0) {
+                lockPage(1440); // Lock for 24 hours on the second failed attempt
+              }
+            }
+          }
+        }).fail(function() {
+          displayMessage('Failed to fetch user credentials.', true);
+        });
+      }
+
+      $('#loginForm').submit(function(e) {
+        e.preventDefault(); // Prevent form submission
+
+        // Get the form data
+        var username = $('#username').val();
+        var password = $('#password').val();
+
+        handleLogin(username, password);
+      });
+    });
+  </script>
+</body>
+</html>
