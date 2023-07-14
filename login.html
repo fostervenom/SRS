@@ -38,62 +38,33 @@
 		#login-details {
 			margin-top: 3rem;
 		}
+
+		#user,
+		#pass,
+		#submit {
+			margin-bottom: 1rem;
+		}
+
+		input[type="text"],
+		input[type="password"],
+		input[type="submit"] {
+			padding: 12px 0;
+			width: 100%;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		input[type="submit"] {
+			background-color: #4CAF50;
+			color: white;
+			cursor: pointer;
+		}
+
+		input[type="submit"]:hover {
+			background-color: #45a049;
+		}
 	</style>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script>
-		$(document).ready(function() {
-			// Login form submission
-			$("#login-form").submit(function(event) {
-				event.preventDefault(); // Prevent form submission
-
-				// Retrieve username and password values
-				var username = $("input[name='name']").val();
-				var password = $("input[name='password']").val();
-
-				// Check if login is locked
-				if (localStorage.getItem("loginLocked") === "true") {
-					alert("Login is locked for the next 10 minutes. Please try again later.");
-					return;
-				}
-
-				// Make an AJAX request to validate credentials
-				$.ajax({
-					url: "prime/credentials.json",
-					dataType: "json",
-					success: function(data) {
-						var credentials = data.credentials;
-						var isValid = credentials.some(function(credential) {
-							return credential.username === username && credential.password === password;
-						});
-
-						if (isValid) {
-							alert("Login successful!");
-							// Redirect to desired page
-							window.location.href = "flex/index.html";
-						} else {
-							alert("Invalid credentials. Please try again.");
-
-							// Increase login attempts and lock if necessary
-							var loginAttempts = localStorage.getItem("loginAttempts") || 0;
-							loginAttempts++;
-							localStorage.setItem("loginAttempts", loginAttempts);
-
-							if (loginAttempts >= 3) {
-								localStorage.setItem("loginLocked", "true");
-								setTimeout(function() {
-									localStorage.removeItem("loginAttempts");
-									localStorage.removeItem("loginLocked");
-								}, 600000); // 10 minutes in milliseconds
-							}
-						}
-					},
-					error: function() {
-						alert("Failed to retrieve credentials.");
-					}
-				});
-			});
-		});
-	</script>
 </head>
 <body>
 	<div id="login-form">
