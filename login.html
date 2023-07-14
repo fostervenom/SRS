@@ -91,36 +91,61 @@
     .login-button:hover:before {
       left: 0;
     }
+
+    .locked {
+      pointer-events: none;
+      opacity: 0.5;
+    }
   </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
-function login() {
-  var username = document.getElementById("username").value;
-  var password = document.getElementById("password").value;
+    var loginAttempts = 0;
+    var lockoutTimer;
 
-  fetch("prime/credentials.json")
-    .then(response => response.json())
-    .then(data => {
-      console.log("JSON data:", data);
-      console.log("Entered credentials:", username, password);
+    function login() {
+      var username = document.getElementById("username").value;
+      var password = document.getElementById("password").value;
 
-      if (data[username] && data[username].password === password) {
-        alert("Login successful");
-        // Perform any necessary actions after successful login (e.g., redirect to another page)
-      } else {
-        alert("Invalid credentials. Please try again.");
-      }
-    })
-    .catch(error => {
-      console.error("Error retrieving credentials:", error);
-    });
-}
+      fetch("prime/credentials.json")
+        .then(response => response.json())
+        .then(data => {
+          if (data[username] && data[username].password === password) {
+            alert("Login successful");
+            window.location.href = "flex/index.html"; // Redirect to the specified page after successful login
+          } else {
+            loginAttempts++;
+            if (loginAttempts >= 3) {
+              lockLoginForm();
+            }
+            alert("Invalid credentials. Please try again.");
+          }
+        })
+        .catch(error => {
+          console.error("Error retrieving credentials:", error);
+        });
+    }
 
+    function lockLoginForm() {
+      var loginForm = document.getElementById("login-form");
+      loginForm.classList.add("locked");
+
+      clearTimeout(lockoutTimer);
+      lockoutTimer = setTimeout(function() {
+        unlockLoginForm();
+      }, 600000); // 10 minutes lockout duration (600,000 milliseconds)
+    }
+
+    function unlockLoginForm() {
+      var loginForm = document.getElementById("login-form");
+      loginForm.classList.remove("locked");
+      loginAttempts = 0;
+    }
   </script>
 </head>
 <body>
   <div id="login-form">
     <div id="login-head">
-      <img src="img/shield.png" alt="Shield Logo"><br>
+      <img src="img/shield.png" alt="Shield Logo"> <br>
       <h1>Log.In</h1>
     </div>
     <div id="login-details">
