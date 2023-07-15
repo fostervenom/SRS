@@ -231,9 +231,7 @@
     </div>
 
 <script>
-    async function loginUser(event) {
-        event.preventDefault();
-
+    async function loginUser() {
         const usernameInput = document.getElementById('username').value;
         const passwordInput = document.getElementById('password').value;
 
@@ -263,10 +261,9 @@
     }
 
     document.addEventListener("DOMContentLoaded", function () {
-        const loginForm = document.querySelector(".login");
-        loginForm.addEventListener("submit", loginUser);
+        const loginButton = document.querySelector(".login__submit");
+        loginButton.addEventListener("click", loginUser);
     });
 </script>
-
 </body>
 </html>
