@@ -235,12 +235,18 @@
             const usernameInput = document.getElementById('username').value;
             const passwordInput = document.getElementById('password').value;
 
-            // Fetch JSON data from the provided link
-            const response = await fetch("https://script.google.com/macros/s/AKfycbzH9_ZggKKrrhPL4-hZBzJQYcw-0IriV94vnWXwg2Vf9ufktXRvZW9lbHIlCvuYPA7Qag/exec");
-            const data = await response.json();
+            // Corrected JSON data structure
+            const jsonData = {
+                "data": [
+                    {
+                        "Username": "abc",
+                        "Password": "123"
+                    }
+                ]
+            };
 
             // Get the username and password from JSON
-            const userData = data.data[0];
+            const userData = jsonData.data[0];
             const username = userData.Username;
             const password = userData.Password;
 
