@@ -230,8 +230,10 @@
         </div>
     </div>
 
-   <script>
-    async function loginUser() {
+<script>
+    async function loginUser(event) {
+        event.preventDefault();
+
         const usernameInput = document.getElementById('username').value;
         const passwordInput = document.getElementById('password').value;
 
@@ -258,8 +260,6 @@
             // Display an error message or handle unsuccessful login here
             alert("Invalid credentials. Please try again.");
         }
-
-        return false; // Prevent form submission
     }
 
     document.addEventListener("DOMContentLoaded", function () {
@@ -267,5 +267,6 @@
         loginForm.addEventListener("submit", loginUser);
     });
 </script>
+
 </body>
 </html>
