@@ -1,309 +1,175 @@
-$tiber: #09383E;
-$elephant: #0C383E;
-$white: #fff;
-
-// rem font sizing.
-html { font-size: 62.5%; }
-body { font-size: 1.4rem; } /* =14px */
-h1   { font-size: 2.4rem; } /* =24px */
-
-.container__item {
-    margin: 0 auto 40px;
+/*--------------------
+Reset & body
+--------------------*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-.landing-page-container {
-    width: 100%;
-    min-height: 100%;
-    height: 90rem;
-    background-image: url('https://s29.postimg.org/vho8xb2pj/landing_bg.jpg');
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: bottom;
-    overflow: hidden;
-    font-family: 'Montserrat', sans-serif;
-    color: $tiber;
+html,
+body {
+  min-height: 100%;
 }
 
-.content__wrapper {
-    max-width: 1200px;
-    width: 90%;
-    height: 100%;
-    margin: 0 auto;
-    position: relative;
-}
-
-.header {
-    width: 100%;
-    height: 2rem;
-    padding: 4.5rem 0;
-    display: block;
-}
-
-.menu-icon {
-    width: 2.5rem;
-    height: 1.5rem;
-    display: inline-block;
-    cursor: pointer;
-}
-
-.header__item {
-    display: inline-block;
-    float: left;
-}
-
-.menu-icon__line {
-    width: 1.5rem;
-    height: 0.2rem;
-    background-color: $elephant;
-    display: block;
-
-    &:before,
-    &:after {
-        content: '';
-        width: 1.5rem;
-        height: 0.2rem;
-        background-color: $elephant;
-        display: inline-block;
-        position: relative;
-    }
-
-    &:before {
-        left: 0.5rem;
-        top: -0.6rem;
-    }
-
-    &:after {
-        top: -1.8rem;
-    }
-}
-
-.heading {
-    width: 90%;
-    font-size: 2rem;
-    font-weight: bold;
-    margin: 0;
-    line-height: 1.7rem;
-    margin: 0 auto;
-    text-align: center;
-}
-
-.social-container {
-    width: 7.25rem;
-    list-style: none;
-    overflow: hidden;
-    padding: 0;
-    margin: 0;
-    float: right;
-
-    .social__icon {
-        float: left;
-        cursor: pointer;
-
-        &.social__icon--dr {
-          margin-left: 0.5rem;
-          
-          img {
-             height: 2rem;
-          }
-        }
-        &.social__icon--in {
-          margin-left: 0.75rem;
-          
-          img {
-             height: 2rem;
-          }
-        }
-
-        &.social__icon--fb {
-            img {
-                height: 2rem;
-                margin: 0rem;
-            }
-        }
-    }
-}
-
-.coords {
-    font-size: 1rem;
-    display: inline-block;
-    transform: rotate(-90deg) translateY(50%);
-    float: left;
-    position: relative;
-    top: 40%;
-    letter-spacing: 0.2rem;
-    left: -11.5rem;
-    margin: 0;
-}
-
-.ellipses-container {
-    width: 50rem;
-    height: 50rem;
-    border-radius: 50%;
-    margin: 0 auto;
-    position: relative;
-    top: 10.5rem;
-
-    .greeting {
-        position: absolute;
-        top: 11.6rem;
-        left: 13rem;
-        right: 0;
-        margin: 0 auto;
-        text-transform: uppercase;
-        letter-spacing: 4rem;
-        font-size: 2.2rem;
-        font-weight: 400;
-        opacity: 0.5;
-
-        &:after{
-            content: '';
-            width: 0.3rem;
-            height: 0.3rem;
-            border-radius: 50%;
-            display: inline-block;
-            background-color: $elephant;
-            position: relative;
-            top: -0.65rem;
-            left: -5.05rem;
-        }
-    }
-
-}
-
-.ellipses {
-    border-radius: 50%;
+body {
+  background: #100F1D;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 1.4;
+  
+  &::after {
+    content: '';
     position: absolute;
     top: 0;
-    border-style: solid;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 1;
+    background: linear-gradient(42deg, #070c18, #1f141c);
+    opacity: 0.9;
+  }
 }
 
-.ellipses__outer--thin {
+
+/*--------------------
+Landing
+--------------------*/
+.landing {
+  position: relative;
+  z-index: 2;
+  width: 710px;
+  height: 520px;
+  margin: 25px auto;
+  box-shadow: 0 3px 30px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  
+  & .logo svg {
+    fill: #1E1C45;
+  }
+  
+  & .base {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
     width: 100%;
     height: 100%;
-    border-width: 1px;
-    border-color: rgba(9, 56, 62, 0.1);
-    animation: ellipsesOrbit 15s ease-in-out infinite;
+    padding: 38px;
+    color: #082352;
+    background: #fff;
+  }
+    
+  & .image {
+    display: none;
+  }
+  
+}
 
 
-    &:after {
-      content: "";
-      background-image: url('https://s29.postimg.org/5h0r4ftkn/ellipses_dial.png');
-      background-repeat: no-repeat;
-      background-position: center;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      position: absolute;
-      opacity: 0.15;
+/*--------------------
+Copy
+--------------------*/
+.copy {
+  position: relative;
+  z-index: 2;
+  
+  & .title {
+    font-size: 52px;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 1;
+    margin-bottom: 30px;
+    margin-left: -3px;
+    background-image: linear-gradient(45deg, #191A42, #B1499C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    
+    & small {
+      font-size: 18px;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-top: 50px;
+      line-height: 1;
+      display: block;
+      text-indent: 3px;
     }
-}
-
-.ellipses__outer--thick {
-    width: 99.5%;
-    height: 99.5%;
-    border-color: $tiber transparent;
-    border-width: 2px;
-    transform: rotate(-45deg);
-    animation: ellipsesRotate 15s ease-in-out infinite;
-}
-
-.ellipses__orbit {
-    width: 2.5rem;
-    height: 2.5rem;
-    border-width: 2px;
-    border-color: $tiber;
-    top: 5rem;
-    right: 6.75rem;
-
-    &:before {
-        content: '';
-        width: 0.7rem;
-        height: 0.7rem;
-        border-radius: 50%;
-        display: inline-block;
-        background-color: $tiber;
-        margin: 0 auto;
-        left: 0;
-        right: 0;
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-
-    }
-}
-
-.scroller {
-    width: 7.5rem;
+  }
+  
+  & .text {
+    color: #282652;
+    width: 400px;
+    font-size: 90%;
+  }
+  
+  & .cta {
+    cursor: pointer;
+    margin-top: 40px;
+    background: linear-gradient(25deg, #2f2d56, #6e355b);
+    color: #fff;
+    text-transform: uppercase;
     display: inline-block;
-    float: right;
-    position: relative;
-    top: -15%;
-    transform: translateY(50%);
-    overflow: hidden;
-
-
-    .page-title {
-        font-family: 'Playfair Display', serif;
-        letter-spacing: 0.5rem;
-        display: inline-block;
-        float: left;
-        margin-top: 1rem;
-    }
-
-    .timeline {
-        width: 1.5rem;
-        height: 9rem;
-        display: inline-block;
-        float: right;
-
-        .timeline__unit {
-            width: 100%;
-            height: 0.1rem;
-            display: block;
-            background-color: $elephant;
-            margin: 0 0 2rem;
-            opacity: 0.2;
-
-            &.timeline__unit--active {
-                opacity: 1;
-
-                &:after {
-                    opacity: 0.2;
-                }
-            }
-
-            &:after {
-                content: '';
-                width: 70%;
-                height: 0.1rem;
-                display: block;
-                position: relative;
-                float: right;
-                background-color: $elephant;
-                top: 1rem;
-            }
-        }
-    }
+    border-radius: 30px;
+    text-decoration: none;
+    padding: 10px 30px;
+    font-weight: 600;
+  }
+  
 }
 
 
-@keyframes ellipsesRotate {
-    0% {
-        transform: rotate(-45deg);
+/*--------------------
+Overlay
+--------------------*/
+.base.overlay {
+  z-index: 2;
+  clip-path: polygon(375px 0, 710px 0, 710px 530px, 469px 530px);
+  color: #fff;
+  background: linear-gradient(45deg, #082352, #6f2d52);
+  transition: all .6s ease-in-out;
+  transform-origin: 0 0;
+  
+  &.over {
+    clip-path: polygon(-1750px 0, 710px 0, 710px 630px, 0 710px);
+  }
+  
+  & .logo svg {
+    fill: #fff;
+  }
+    
+  & .image {
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    right: 0;
+    z-index: 1;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      right: 0;
+      z-index: 1;
+      background: linear-gradient(42deg, #082352, #6f2d52);
+      opacity: 0.8;
     }
-
-    100% {
-        transform: rotate(-405deg);
-    }
-}
-
-@keyframes ellipsesOrbit {
-    0% {
-        transform: rotate(0);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+  }
+  
+  & .title {
+    background-image: linear-gradient(0, #fff, #fff);
+  }
+  
+  & .text {
+    color: #fff;
+  }
+  
+  & .cta {
+    background: #fff;
+    color: #0A2452;
+  }
 }
