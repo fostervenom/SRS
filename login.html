@@ -230,37 +230,42 @@
         </div>
     </div>
 
-    <script>
-        async function loginUser() {
-            const usernameInput = document.getElementById('username').value;
-            const passwordInput = document.getElementById('password').value;
+   <script>
+    async function loginUser() {
+        const usernameInput = document.getElementById('username').value;
+        const passwordInput = document.getElementById('password').value;
 
-            // Corrected JSON data structure
-            const jsonData = {
-                "data": [
-                    {
-                        "Username": "abc",
-                        "Password": "123"
-                    }
-                ]
-            };
+        // Corrected JSON data structure
+        const jsonData = {
+            "data": [
+                {
+                    "Username": "abc",
+                    "Password": "123"
+                }
+            ]
+        };
 
-            // Get the username and password from JSON
-            const userData = jsonData.data[0];
-            const username = userData.Username;
-            const password = userData.Password;
+        // Get the username and password from JSON
+        const userData = jsonData.data[0];
+        const username = userData.Username;
+        const password = userData.Password;
 
-            // Check if the entered username and password match the JSON data
-            if (usernameInput === username && passwordInput === password) {
-                // Redirect to the specified page after successful login
-                window.location.href = "flex/index.html";
-                return false; // Prevent form submission
-            } else {
-                // Display an error message or handle unsuccessful login here
-                alert("Invalid credentials. Please try again.");
-                return false; // Prevent form submission
-            }
+        // Check if the entered username and password match the JSON data
+        if (usernameInput === username && passwordInput === password) {
+            // Redirect to the specified page after successful login
+            window.location.href = "flex/index.html";
+        } else {
+            // Display an error message or handle unsuccessful login here
+            alert("Invalid credentials. Please try again.");
         }
-    </script>
+
+        return false; // Prevent form submission
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const loginForm = document.querySelector(".login");
+        loginForm.addEventListener("submit", loginUser);
+    });
+</script>
 </body>
 </html>
