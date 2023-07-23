@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Marksheet</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        /* Add some basic styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        #marksheet-data {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        #marksheet-data th, #marksheet-data td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        #marksheet-data th {
+            background-color: #f2f2f2;
+        }
+        #qr-code {
+            margin-top: 20px;
+            text-align: center;
+        }
+    </style>
+    <!-- Include QR code library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.4.4/dist/qrcode.min.js"></script>
+    <!-- Include jQuery library -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Student Marksheet</h1>
+    <label for="student-id">Enter Student ID:</label>
+    <input type="number" id="student-id" min="1" max="10">
+    <button onclick="searchStudent()">Search</button>
+
+    <table id="marksheet-data">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Marks Obtained</th>
+                <th>Max Marks</th>
+                <th>Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Student marksheet data will be added here dynamically -->
+        </tbody>
+    </table>
+
+    <div id="qr-code">
+        <!-- QR code will be added here dynamically -->
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Marksheet data in JSON format
+            var marksheetData = {
+                "marksheet_data": [
+                    {
+                        "id": "1",
+                        "name": "John Doe",
+                        "marks_obtained": 85,
+                        "max_marks": 100,
+                        "Result": "Pass"
+                    },
+                    // ... (other student data)
+                ]
+            };
+
+            // Function to search for a student by ID
+            function searchStudent() {
+                var studentId = $("#student-id").val();
+                if (studentId < 1 || studentId > 10) {
+                    alert("Please enter a valid student ID between 1 and 10.");
+                    return;
+                }
+
+                var studentData = marksheetData.marksheet_data.find(function (student) {
+                    return student.id === studentId.toString();
+                });
+
+                if (studentData) {
+                    // Display student data in the table
+                    var output = "<tr>";
+                    output += "<td>" + studentData.id + "</td>";
+                    output += "<td>" + studentData.name + "</td>";
+                    output += "<td>" + studentData.marks_obtained + "</td>";
+                    output += "<td>" + studentData.max_marks + "</td>";
+                    output += "<td>" + studentData.Result + "</td>";
+                    output += "</tr>";
+
+                    $("#marksheet-data tbody").html(output);
+
+                    // Clear previous QR code
+                    $("#qr-code").empty();
+
+                    // Generate and display the QR code
+                    var qrCodeData = JSON.stringify(studentData);
+                    var qrCode = new QRCode(document.getElementById("qr-code"), {
+                        text: qrCodeData,
+                        width: 200,
+                        height: 200,
+                    });
+                } else {
+                    $("#marksheet-data tbody").empty();
+                    $("#qr-code").empty();
+                    alert("Student with ID " + studentId + " not found.");
+                }
+            }
+        });
+    </script>
+</body>
+</html>
