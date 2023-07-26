@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>School Staff Contact</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            margin: 20px;
+        }
+
+        .contact-card {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+        }
+
+        .contact-card h2 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .contact-card p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn-whatsapp {
+            background-color: #25D366;
+        }
+
+        .btn-call {
+            background-color: #34B7F1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <label for="staff-select">Select staff member:</label>
+        <select id="staff-select">
+            <option value="">-- Select a name --</option>
+            <option value="7897123954">Akash Anand</option>
+            <option value="7460808009">Anurag Reeta Dixit</option>
+            <option value="8303762556">Anurag Tiwari</option>
+            <option value="6387885957">Archana</option>
+            <option value="9415643301">Awadesh Tripathi</option>
+            <option value="9554928581">Bal Krishn Pandey</option>
+            <option value="7380743600">Garima Shukla</option>
+            <option value="8219051464">Gayatri</option>
+            <option value="8840347463">Munendra Kumar</option>
+            <option value="7897728232">Neeraj Shukla</option>
+            <option value="9369205952">Neeshu Singh</option>
+            <option value="9621697430">Niharika Shukla</option>
+            <option value="7985001617">Prashant Mishra</option>
+            <option value="8707291752">Priyanka Vishwakarma</option>
+            <option value="9555093418">Ragini Singh</option>
+            <option value="9163875081">Rajkumari Gupta</option>
+            <option value="9793384673">Sarvjeet Singh</option>
+            <option value="9580170989">Satyam Vaish</option>
+            <option value="8081744755">Shalini Shukla</option>
+            <option value="9336743254">Shivani Tiwari</option>
+            <option value="9005362250">Sonu</option>
+            <option value="9569100274">Sumit Mishra</option>
+        </select>
+
+        <div id="contact-info" class="contact-card" style="display: none;">
+            <h2 id="contact-name"></h2>
+            <p id="contact-number"></p>
+            <div class="btn-container">
+                <a href="#" id="call-btn" class="btn btn-call">Call Now</a>
+                <a href="#" id="whatsapp-btn" class="btn btn-whatsapp">WhatsApp Now</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#staff-select").change(function() {
+                var selectedValue = $(this).val();
+                if (selectedValue !== "") {
+                    $("#contact-info").show();
+                    $("#contact-name").text($("#staff-select option:selected").text());
+                    $("#contact-number").text("Number: " + selectedValue);
+                    $("#call-btn").attr("href", "tel:" + selectedValue);
+                    $("#whatsapp-btn").attr("href", "https://wa.me/" + selectedValue);
+                } else {
+                    $("#contact-info").hide();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
