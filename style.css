@@ -1,0 +1,54 @@
+			opacity: 1;
+		}
+	}
+}
+.formContainer {
+	text-align: left;
+	.formDiv {
+		margin-bottom: 30px;
+		left: -25px;
+		opacity: 0;
+		transition: 0.5s ease;
+		position: relative;
+		&.loadIn {
+			opacity: 1;
+			left: 0;
+		}
+		&:last-child {
+			padding-top: 10px;
+			margin-bottom: 0;
+		}
+	}
+	p {
+		margin: 0;
+		font-weight: 700;
+		color: #aaa;
+		font-size: 10px;
+		user-select: none;
+	}
+	input[type=password], input[type=email] {
+		background: transparent;
+		border: none;
+		box-shadow: inset 0 -1px 0 rgba(255,255,255,0.15);
+		padding: 15px 0;
+		box-sizing: border-box;
+		color: #fff;
+		width: 100%;
+		&:focus {
+			box-shadow: inset 0 -2px 0 #fff;
+		}
+	}
+}
+.logoContainer {
+	padding: 45px 35px;
+	box-sizing: border-box;
+	position: relative;
+	z-index: 2;
+	position: relative;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: column;
+	transform: scale(0,0);
+	img {
