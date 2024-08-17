@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Morning Commander</title>
+    <style>
+        body {
+            background-color: #2C3E50;
+            color: #ECF0F1;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            margin: 0;
+        }
+        h1 {
+            font-size: 3em;
+        }
+        p {
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Good Morning, Commander!</h1>
+        <p>Your trusty laptop which is from the Moon, is all powered up and ready to help you conquer the day.</p>
+        <p>Together, let's turn ideas into actions, tasks into triumphs, and dreams into reality.</p>
+        <p>Wishing you a productive and inspiring day ahead!</p>
+    </div>
+
+    <script>
+        function speakGreeting() {
+            const message = "Good morning Commander! Your trusty laptop which is from the Moon, is all powered up and ready to help you conquer the day. Together, let's turn ideas into actions, tasks into triumphs, and dreams into reality. Wishing you a productive and inspiring day ahead!";
+            const speech = new SpeechSynthesisUtterance(message);
+
+            // Get the list of available voices
+            const voices = speechSynthesis.getVoices();
+
+            // Select Microsoft's "David" voice
+            speech.voice = voices.find(voice => voice.name === 'Microsoft David Desktop - English (United States)') || voices[0];
+            
+            // Add event listener to close the window after the speech ends
+            speech.onend = function() {
+                window.close();
+            };
+
+            speechSynthesis.speak(speech);
+        }
+        
+        window.onload = function() {
+            // Wait for the voices to be loaded before speaking
+            speechSynthesis.onvoiceschanged = speakGreeting;
+        };
+    </script>
+</body>
+</html>
