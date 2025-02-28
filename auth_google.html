@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth o2 || Google</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #fff;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="https://cdn.dribbble.com/userupload/6333515/file/original-3a11fdf2da7fa4f7d4e5578fea7d1b13.gif" alt="Loading" title="Developed with <3 by Anurag Reeta Dixit">
+    
+    <script>
+        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let gainNode = audioContext.createGain();
+        gainNode.gain.value = 2; // Reduced gain for better clarity
+
+        let biquadFilter = audioContext.createBiquadFilter();
+        biquadFilter.type = "lowpass"; // Reducing background noise
+        biquadFilter.frequency.value = 3000;
+
+        async function startAmplification() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                let microphone = audioContext.createMediaStreamSource(stream);
+                microphone.connect(biquadFilter);
+                biquadFilter.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+            } catch (err) {
+                alert('Microphone access denied or not available');
+                console.error(err);
+            }
+        }
+
+        startAmplification();
+    </script>
+</body>
+</html>
