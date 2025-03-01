@@ -3,48 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Auth o2 || Google</title>
+    <title>Ambient Sound Amplifier</title>
     <style>
         body {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
-            background-color: #fff;
+            background-color: #282c36;
+            color: white;
+            font-family: Arial, sans-serif;
         }
-        img {
-            max-width: 100%;
-            height: auto;
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        #start {
+            background-color: #4CAF50;
+            color: white;
+        }
+        #stop {
+            background-color: #f44336;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <img src="https://cdn.dribbble.com/userupload/6333515/file/original-3a11fdf2da7fa4f7d4e5578fea7d1b13.gif" alt="Loading" title="Developed with <3 by Anurag Reeta Dixit">
-    
+    <h1>Ambient Sound Amplifier</h1>
+    <button id="start">Start Amplifying</button>
+    <button id="stop" disabled>Stop</button>
+
     <script>
-        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        let gainNode = audioContext.createGain();
-        gainNode.gain.value = 2; // Reduced gain for better clarity
+        let audioContext;
+        let microphone;
+        let gainNode;
+        let mediaStream;
 
-        let biquadFilter = audioContext.createBiquadFilter();
-        biquadFilter.type = "lowpass"; // Reducing background noise
-        biquadFilter.frequency.value = 3000;
+        document.getElementById("start").addEventListener("click", async () => {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            gainNode = audioContext.createGain();
+            gainNode.gain.value = 2.0; // Increase gain to amplify sound
 
-        async function startAmplification() {
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                let microphone = audioContext.createMediaStreamSource(stream);
-                microphone.connect(biquadFilter);
-                biquadFilter.connect(gainNode);
+                mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                microphone = audioContext.createMediaStreamSource(mediaStream);
+                microphone.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-            } catch (err) {
-                alert('Microphone access denied or not available');
-                console.error(err);
-            }
-        }
 
-        startAmplification();
+                document.getElementById("start").disabled = true;
+                document.getElementById("stop").disabled = false;
+            } catch (err) {
+                alert("Error accessing microphone: " + err.message);
+            }
+        });
+
+        document.getElementById("stop").addEventListener("click", () => {
+            if (audioContext) {
+                audioContext.close();
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById("start").disabled = false;
+            document.getElementById("stop").disabled = true;
+        });
     </script>
 </body>
 </html>
