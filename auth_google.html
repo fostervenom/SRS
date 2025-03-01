@@ -31,32 +31,46 @@
             background-color: #f44336;
             color: white;
         }
+        canvas {
+            margin-top: 20px;
+            background-color: black;
+            width: 600px;
+            height: 200px;
+        }
     </style>
 </head>
 <body>
     <h1>Ambient Sound Amplifier</h1>
     <button id="start">Start Amplifying</button>
     <button id="stop" disabled>Stop</button>
+    <canvas id="visualizer"></canvas>
 
     <script>
-        let audioContext;
-        let microphone;
-        let gainNode;
-        let mediaStream;
+        let audioContext, microphone, gainNode, mediaStream, analyser, dataArray, canvas, canvasCtx;
+
+        canvas = document.getElementById("visualizer");
+        canvasCtx = canvas.getContext("2d");
 
         document.getElementById("start").addEventListener("click", async () => {
             audioContext = new (window.AudioContext || window.webkitAudioContext)();
             gainNode = audioContext.createGain();
-            gainNode.gain.value = 2.0; // Increase gain to amplify sound
+            gainNode.gain.value = 2.0; // Amplification factor
+
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+            dataArray = new Uint8Array(analyser.frequencyBinCount);
 
             try {
                 mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 microphone = audioContext.createMediaStreamSource(mediaStream);
                 microphone.connect(gainNode);
-                gainNode.connect(audioContext.destination);
+                gainNode.connect(analyser);
+                analyser.connect(audioContext.destination);
 
                 document.getElementById("start").disabled = true;
                 document.getElementById("stop").disabled = false;
+
+                visualize();
             } catch (err) {
                 alert("Error accessing microphone: " + err.message);
             }
@@ -70,6 +84,27 @@
             document.getElementById("start").disabled = false;
             document.getElementById("stop").disabled = true;
         });
+
+        function visualize() {
+            requestAnimationFrame(visualize);
+            analyser.getByteFrequencyData(dataArray);
+
+            canvasCtx.fillStyle = "black";
+            canvasCtx.fillRect(0, 0, canvas.width, canvas.height);
+
+            let barWidth = (canvas.width / dataArray.length) * 2.5;
+            let barHeight;
+            let x = 0;
+
+            for (let i = 0; i < dataArray.length; i++) {
+                barHeight = dataArray[i];
+
+                canvasCtx.fillStyle = `rgb(${barHeight + 100}, 50, 200)`;
+                canvasCtx.fillRect(x, canvas.height - barHeight / 2, barWidth, barHeight / 2);
+
+                x += barWidth + 1;
+            }
+        }
     </script>
 </body>
 </html>
