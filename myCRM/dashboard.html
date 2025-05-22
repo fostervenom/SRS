@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CRM Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+
+  <div class="bg-white shadow-lg rounded-lg max-w-3xl mx-auto p-6">
+    <h1 class="text-3xl font-bold mb-4 text-blue-700">Welcome to the CRM Dashboard</h1>
+    <p id="welcome" class="mb-6 text-gray-700 text-lg"></p>
+
+    <div class="grid gap-4 sm:grid-cols-2">
+      <a href="attendance.html" class="block bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold p-4 rounded shadow">
+        Attendance Tracker
+      </a>
+      <a href="call-tagging.html" class="block bg-green-100 hover:bg-green-200 text-green-800 font-semibold p-4 rounded shadow">
+        Call Tagging Form
+      </a>
+      <a href="dod.html" class="block bg-yellow-100 hover:bg-yellow-200 text-yellow-800 font-semibold p-4 rounded shadow">
+        DoD Seller List
+      </a>
+      <a href="email.html" class="block bg-purple-100 hover:bg-purple-200 text-purple-800 font-semibold p-4 rounded shadow">
+        Email Sender
+      </a>
+      <a href="performance.html" class="block bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold p-4 rounded shadow">
+        Performance Dashboard
+      </a>
+    </div>
+
+    <button onclick="logout()" class="mt-6 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">
+      Logout
+    </button>
+  </div>
+
+  <script>
+    // Show user details or redirect to login
+    const user = JSON.parse(localStorage.getItem("user"));
+    const welcomeEl = document.getElementById("welcome");
+
+    if (!user || !user.sapId || !user.name) {
+      window.location.href = "index.html";
+    } else {
+      welcomeEl.innerText = `Hello, ${user.name} (SAP ID: ${user.sapId})`;
+    }
+
+    function logout() {
+      localStorage.removeItem("user");
+      window.location.href = "index.html";
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Email Sender</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="p-6 bg-gray-50">
+  <h2 class="text-2xl font-bold mb-4">Send Predefined Email</h2>
+  <input id="sellerEmail" placeholder="Seller Email" class="border p-2 w-full mb-2" />
+  <select id="template" class="border p-2 w-full mb-2">
+    <option value="Template 1 content">Template 1</option>
+    <option value="Template 2 content">Template 2</option>
+  </select>
+  <button onclick="sendEmail()" class="bg-blue-600 text-white px-4 py-2 rounded">Send Email</button>
+  <script src="main.js"></script>
+</body>
+</html>

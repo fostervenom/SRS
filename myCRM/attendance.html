@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Attendance Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6 min-h-screen">
+
+  <div class="bg-white p-6 rounded shadow max-w-md mx-auto">
+    <h2 class="text-2xl font-bold text-blue-700 mb-4">Attendance Tracker</h2>
+    <p id="userInfo" class="mb-4 text-gray-600"></p>
+
+    <div class="space-y-3">
+      <button onclick="submitAttendance('Clock In')" class="w-full bg-green-500 text-white px-4 py-2 rounded">Clock In</button>
+      <button onclick="submitAttendance('Break In')" class="w-full bg-yellow-400 text-white px-4 py-2 rounded">Break In</button>
+      <button onclick="submitAttendance('Break Out')" class="w-full bg-yellow-600 text-white px-4 py-2 rounded">Break Out</button>
+      <button onclick="submitAttendance('Clock Out')" class="w-full bg-red-500 text-white px-4 py-2 rounded">Clock Out</button>
+    </div>
+
+    <iframe id="attendanceFrame" class="mt-6 w-full h-16 border rounded hidden"></iframe>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userInfo = document.getElementById("userInfo");
+    const iframe = document.getElementById("attendanceFrame");
+
+    if (!user || !user.name || !user.email || !user.sapId) {
+      alert("Not logged in. Redirecting to login...");
+      window.location.href = "index.html";
+    } else {
+      userInfo.textContent = `Logged in as ${user.name} (${user.sapId})`;
+    }
+
+    function submitAttendance(action) {
+      const baseUrl = "https://script.google.com/macros/s/YOUR_DEPLOYED_SCRIPT_ID/exec"; // 🔁 Replace with your actual Web App URL
+      const params = new URLSearchParams({
+        sapId: user.sapId,
+        name: user.name,
+        email: user.email,
+        action: action,
+        timestamp: new Date().toISOString()
+      });
+
+      iframe.src = `${baseUrl}?${params.toString()}`;
+      iframe.classList.remove("hidden");
+      alert(`Attendance action "${action}" sent.`);
+    }
+  </script>
+
+</body>
+</html>
