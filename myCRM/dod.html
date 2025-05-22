@@ -1,13 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>DoD Sellers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="p-6 bg-gray-50">
-  <h2 class="text-2xl font-bold mb-4">Day-on-Day Seller List</h2>
-  <table class="table-auto w-full border" id="dodTable"></table>
-  <script src="main.js"></script>
+<body class="bg-gray-100 p-6 min-h-screen">
+
+  <div class="bg-white p-6 rounded shadow max-w-6xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+      <button onclick="history.back()" class="bg-gray-300 px-3 py-1 rounded hover:bg-gray-400 text-sm">
+        ← Back
+      </button>
+      <h2 class="text-2xl font-bold text-blue-700">Day-on-Day Sellers</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+      <div>
+        <label class="text-sm text-gray-600 block mb-1">Filter by Ad Manager:</label>
+        <select id="managerFilter" onchange="applyFilter()" class="w-full p-2 border rounded">
+          <option value="">-- All --</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600 block mb-1">Filter by Priority:</label>
+        <select id="priorityFilter" onchange="applyFilter()" class="w-full p-2 border rounded">
+          <option value="">-- All --</option>
+        </select>
+      </div>
+      <div>
+        <label class="text-sm text-gray-600 block mb-1">Search by Seller ID:</label>
+        <input id="sellerSearch" oninput="applyFilter()" type="text" placeholder="Enter Seller ID" class="w-full p-2 border rounded" />
+      </div>
+      <div class="flex items-end">
+        <button onclick="exportToCSV()" class="bg-green-600 text-white w-full px-4 py-2 rounded hover:bg-green-700">
+          Export to CSV
+        </button>
+      </div>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full border border-gray-300" id="dodTable">
+        <thead class="bg-gray-200">
+          <tr>
+            <th class="border p-2">Seller ID</th>
+            <th class="border p-2">Display Name</th>
+            <th class="border p-2">DoD Bucket</th>
+            <th class="border p-2">Priority</th>
+            <th class="border p-2">Ad Manager Name</th>
+          </tr>
+        </thead>
+        <tbody id="dodBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    let allRows = [];
+    let filteredRows = [];
+
+    document.addEventListener("DOMContentLoaded", loadDoDSellers);
+
+    async function loadDoDSellers() {
+      const url = "https://docs.google.com/spreadsheets/d/10uxZbyGZQetgNwaBnFC-iQhpqbH_-hyyjgO3Tr1SMDE/gviz/tq?tqx=out:json&sheet=DoD Sellers";
+
+      try {
+        const res = await fetch(url);
+        const text = await res.text();
+        const json = JSON.parse(text.substring(47).slice(0, -2));
+        allRows = json.table.rows;
+
+        populateManagerDropdown();
+        populatePriorityDropdown();
+        renderTable(allRows.slice(1)); // skip header row
+      } catch (err) {
+        console.error("Failed to load DoD Sellers:", err);
+        alert("Failed to load data.");
+      }
+    }
+
+    function populateManagerDropdown() {
+      const managerSet = new Set();
+      allRows.slice(1).forEach(row => {
+        const manager = row.c[4]?.v?.trim();
+        if (manager) managerSet.add(manager);
+      });
+
+      const dropdown = document.getElementById("managerFilter");
+      [...managerSet].sort().forEach(name => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        dropdown.appendChild(option);
+      });
+    }
+
+    function populatePriorityDropdown() {
+      const prioritySet = new Set();
+      allRows.slice(1).forEach(row => {
+        const priority = row.c[3]?.v?.trim();
+        if (priority) prioritySet.add(priority);
+      });
+
+      const dropdown = document.getElementById("priorityFilter");
+      [...prioritySet].sort().forEach(priority => {
+        const option = document.createElement("option");
+        option.value = priority;
+        option.textContent = priority;
+        dropdown.appendChild(option);
+      });
+    }
+
+    function applyFilter() {
+      const selectedManager = document.getElementById("managerFilter").value;
+      const selectedPriority = document.getElementById("priorityFilter").value;
+      const sellerSearch = document.getElementById("sellerSearch").value.toLowerCase();
+
+      filteredRows = allRows.slice(1).filter(row => {
+        const sellerId = row.c[0]?.v?.toString().toLowerCase() || "";
+        const priority = row.c[3]?.v || "";
+        const manager = row.c[4]?.v || "";
+
+        return (
+          (!selectedManager || manager === selectedManager) &&
+          (!selectedPriority || priority === selectedPriority) &&
+          (!sellerSearch || sellerId.includes(sellerSearch))
+        );
+      });
+
+      renderTable(filteredRows);
+    }
+
+    function renderTable(rows) {
+      const tableBody = document.getElementById("dodBody");
+      tableBody.innerHTML = "";
+
+      if (rows.length === 0) {
+        const tr = document.createElement("tr");
+        const td = document.createElement("td");
+        td.colSpan = 5;
+        td.textContent = "No matching sellers.";
+        td.className = "text-center py-4 text-gray-500";
+        tr.appendChild(td);
+        tableBody.appendChild(tr);
+        return;
+      }
+
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        for (let i = 0; i < 5; i++) {
+          const td = document.createElement("td");
+          td.textContent = row.c[i]?.v || "";
+          td.className = "border px-2 py-1 text-sm";
+          tr.appendChild(td);
+        }
+        tableBody.appendChild(tr);
+      });
+    }
+
+    function exportToCSV() {
+      const headers = ["Seller ID", "Display Name", "DoD Bucket", "Priority", "Ad Manager Name"];
+      const exportData = filteredRows.length ? filteredRows : allRows.slice(1);
+
+      if (!exportData.length) return alert("No data to export.");
+
+      const csvContent = [
+        headers.join(","),
+        ...exportData.map(row =>
+          headers.map((_, i) => `"${(row.c[i]?.v || "").toString().replace(/"/g, '""')}"`).join(",")
+        )
+      ].join("\n");
+
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `DoD_Sellers.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
 </body>
 </html>
